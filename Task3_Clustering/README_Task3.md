@@ -1,177 +1,89 @@
-📄 1. Project Overview
+1. Deskripsi Singkat
 
-This project implements a complete end-to-end machine learning pipeline for customer clustering using unsupervised learning techniques.
-The goal is to group credit card customers based on their spending behavior, payment patterns, and cash advance activity.
+Proyek ini berisi implementasi end-to-end clustering pipeline menggunakan metode unsupervised learning untuk mengelompokkan pelanggan kartu kredit berdasarkan perilaku penggunaan, pembayaran, dan aktivitas cash advance.
+Dataset yang digunakan: clusteringmidterm.csv.
 
-The dataset used contains features related to customer balance, purchase patterns, credit limits, payment behavior, and tenure.
+2. Tujuan
 
-This project was created as part of a Midterm Assignment – Machine Learning / Deep Learning.
+Melakukan preprocessing data (missing value, scaling).
 
-🎯 2. Objectives
-Main Objective
+Menentukan jumlah cluster optimal menggunakan Elbow Method dan Silhouette Score.
 
-To design and implement a comprehensive clustering pipeline capable of segmenting customers into meaningful groups for business insight and decision-making.
+Membangun model clustering (K-Means).
 
-Task Goals
+Melakukan interpretasi cluster untuk memahami karakteristik setiap kelompok pelanggan.
 
-Perform data cleaning & preprocessing
+3. Dataset
 
-Handle missing values and outliers
+Beberapa fitur utama:
 
-Scale features properly
+BALANCE, PURCHASES, ONEOFF_PURCHASES, INSTALLMENTS_PURCHASES
 
-Apply unsupervised learning algorithms
+CASH_ADVANCE, PURCHASES_FREQUENCY, CASH_ADVANCE_FREQUENCY
 
-Determine optimal number of clusters
+CREDIT_LIMIT, PAYMENTS, MINIMUM_PAYMENTS
 
-Evaluate clusters (Silhouette Score, visual analysis)
+PRC_FULL_PAYMENT, TENURE
 
-Interpret and explain each customer segment
+Variabel CUST_ID tidak digunakan sebagai fitur.
 
-📂 3. Dataset Description
+4. Alur Pengerjaan
 
-File: clusteringmidterm.csv
+Load data dan eksplorasi awal.
 
-The dataset includes the following key features:
+Imputasi missing values menggunakan median.
 
-BALANCE — Outstanding balance
+Scaling seluruh fitur menggunakan StandardScaler.
 
-PURCHASES — Total purchase amount
+(Opsional) PCA 2D untuk visualisasi.
 
-ONEOFF_PURCHASES — Large one-time purchases
+Menentukan jumlah cluster optimal.
 
-INSTALLMENTS_PURCHASES — Purchases using installment
+Elbow menunjukkan tekukan di sekitar k = 3–4
 
-CASH_ADVANCE — Total cash advance amount
+Silhouette Score tertinggi pada k = 3
 
-PURCHASES_FREQUENCY, CASH_ADVANCE_FREQUENCY — Behavioral frequencies
+Model akhir menggunakan K-Means (k = 3).
 
-CREDIT_LIMIT — Maximum credit
+Analisis profil tiap cluster menggunakan rata-rata fitur dan heatmap normalisasi.
 
-PAYMENTS & MINIMUM_PAYMENTS — Payment behavior
+5. Ringkasan Interpretasi Cluster
+Cluster 0 – Active High Spenders
 
-PRC_FULL_PAYMENT — Full payment ratio
+Nilai tinggi pada PURCHASES, ONEOFF, INSTALLMENTS.
 
-TENURE — Customer duration (months)
+Cash advance sangat rendah.
 
-🛠️ 4. Workflow
-1. Load & Inspect Data
+Credit limit tinggi, pembayaran cukup baik.
 
-Checked missing values
+Pelanggan aktif dan stabil.
 
-Explored statistical distribution
+Cluster 1 – Low Usage / Low Risk
 
-Identified features requiring normalization
+Balance kecil, pembelian rendah.
 
-2. Preprocessing
+Tidak menggunakan cash advance.
 
-Removed CUST_ID (non-feature)
+Cenderung sering membayar penuh.
 
-Imputed missing values using Median Imputer
+Aktivitas penggunaan kartu rendah.
 
-Standardized all numeric features using StandardScaler
+Cluster 2 – High Balance & High Cash Advance
 
-Visualized outliers using boxplots
+Balance tertinggi dan paling sering cash advance.
 
-3. Optional Step: PCA
+Jarang membayar full payment.
 
-Performed PCA for 2D visualization
+Risiko lebih tinggi dibanding cluster lain.
 
-Helped understand cluster separations
-
-4. Determine Optimal k
-
-Used two methods:
-
-✔ Elbow Method
-
-Showed diminishing returns after k = 3–4.
-
-✔ Silhouette Score
-
-Peak score at k = 3 → best-defined clusters.
-
-5. Clustering Model
-
-Final model: K-Means with k = 3
-
-Evaluation:
-
-Silhouette Score indicates good separation
-
-PCA visualization shows distinct cluster patterns
-
-6. Cluster Interpretation
-
-Created cluster profiles using normalized mean values per cluster and a heatmap.
-
-🔍 5. Cluster Interpretation Summary
-🔵 Cluster 0 — Active High Spenders
-
-High purchases (one-off & installment)
-
-High credit limit
-
-Low cash advance usage
-
-Good payment behavior
-
-Long tenure
-
-→ Premium, high-value customers with healthy financial behavior
-
-🟣 Cluster 1 — Low Usage / Low Risk
-
-Very low balance
-
-Very low purchases & zero cash advance
-
-Frequently pays full
-
-Short tenure
-
-→ Safe, low-risk customers with minimal card utilization
-
-🟡 Cluster 2 — High Balance & High Cash Advance
-
-Highest balance
-
-High cash advance amount & frequency
-
-Rarely pays in full
-
-High credit limit utilization
-
-Short tenure
-
-→ Risky users; require monitoring due to heavy reliance on cash advance
-
-📊 6. Visualizations
-
-The notebook includes:
-
-Missing value heatmap
-
-Boxplots for outlier inspection
-
-PCA scatter plots
-
-Elbow & Silhouette evaluation plots
-
-Cluster heatmap (feature normalization)
-
-🧪 7. Technologies Used
+6. Tools & Library
 
 Python
 
-Pandas
-
-NumPy
+Pandas, NumPy
 
 Scikit-Learn
 
-Matplotlib
-
-Seaborn
+Matplotlib, Seaborn
 
 Google Colab
