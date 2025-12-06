@@ -1,145 +1,119 @@
-Task 1 – Fraud Detection (Machine Learning End-to-End Pipeline)
+Task 1 – Fraud Detection (Machine Learning & Deep Learning Pipeline)
 
 Nama: Jaka Kelana Wijaya
 NIM: 1103223048
 Kelas: TK-46-02
 
-🎯 Objective
+Objective
 
-Membangun end-to-end pipeline Machine Learning untuk memprediksi probabilitas sebuah transaksi online bersifat fraudulent. Pipeline meliputi:
+Membangun pipeline end-to-end untuk memprediksi probabilitas terjadinya transaksi fraud. Proses mencakup loading data, preprocessing, penanganan missing values, encoding fitur kategorikal, training model Machine Learning dan Deep Learning, evaluasi, serta pembuatan file submission sesuai format tugas.
 
-Data loading
+Dataset
+
+train_transaction.csv: 590.540 baris, 392 fitur + target isFraud
+
+test_transaction.csv: 506.691 baris, 392 fitur
+
+Distribusi kelas sangat tidak seimbang dengan proporsi fraud sekitar 3%.
+
+Karena keterbatasan RAM di Google Colab, digunakan sampling sebesar 30.000 baris dari data training. Sampling tetap menjaga distribusi kelas.
 
 Preprocessing
 
-Handling missing values
+Preprocessing dilakukan menggunakan ColumnTransformer dengan komponen berikut:
 
-Handling class imbalance
+Fitur numerik: imputasi median
 
-Model training
+Fitur kategorikal: imputasi nilai paling sering dan OrdinalEncoder
 
-Evaluation
+Terdapat 378 fitur numerik dan 14 fitur kategorikal
 
-Prediction untuk test set
+Setelah transformasi, seluruh fitur menjadi bentuk numerik sehingga dapat digunakan baik untuk model Random Forest maupun model Deep Learning.
 
-Pembuatan submission file
+Handling Class Imbalance
 
-📂 Dataset
-
-train_transaction.csv → 590.540 baris, 392 fitur + target isFraud
-
-test_transaction.csv → 506.691 baris, 392 fitur
-
-Dataset memiliki class imbalance ekstrem, di mana transaksi fraud hanya ±3%.
-
-🧪 1. Data Sampling (30.000 rows)
-
-Karena ukuran dataset sangat besar dan Google Colab memiliki keterbatasan RAM (12 GB), training model pada seluruh dataset menyebabkan crash.
-
-Untuk mengatasi hal tersebut digunakan:
-
-Random sampling = 30.000 rows
-
-
-Sampling ini tetap menjaga distribusi kelas.
-
-🧹 2. Preprocessing
-🔹 Missing Values Handling
-
-Numerik → Median imputation
-
-Kategorikal → Most Frequent + Ordinal Encoding
-
-🔹 Fitur
-
-378 fitur numerik
-
-14 fitur kategorikal
-
-Preprocessing dilakukan menggunakan ColumnTransformer.
-
-⚖️ 3. Handling Class Imbalance
-
-Model menggunakan:
+Model Machine Learning menggunakan:
 
 class_weight = "balanced_subsample"
 
+Tujuannya agar model memberikan bobot lebih besar pada kelas fraud yang jumlahnya jauh lebih sedikit.
 
-Agar model memberikan bobot lebih besar pada kelas fraud.
+Modeling
+1. Random Forest Classifier (Machine Learning)
 
-🤖 4. Model
-
-Model utama: Random Forest Classifier
+Model ini dipilih karena stabil terhadap data tabular berdimensi besar dan cukup efektif menangani ketidakseimbangan kelas.
 
 Parameter utama:
 
 n_estimators = 150
-class_weight = "balanced_subsample"
+
+class_weight = balanced_subsample
+
 n_jobs = -1
 
+Model dievaluasi pada validation set menggunakan AUC dan classification report.
 
-Dipilih karena:
+2. Multilayer Perceptron (Deep Learning)
 
-Stabil untuk high-dimensional tabular data
+Model Deep Learning digunakan sebagai pembanding. Setelah preprocessing dan standard scaling, data digunakan untuk melatih arsitektur MLP dengan beberapa hidden layer.
 
-Tidak mudah crash
+Komponen utama:
 
-Mampu menangani imbalance
+Hidden layers dengan aktivasi ReLU
 
-📊 5. Evaluation
+Dropout untuk mengurangi overfitting
 
-Hasil pada validation set:
+Output beraktivasi sigmoid
 
-Metric	Value
-ROC-AUC	0.898
-Precision (1)	0.30
-Recall (1)	0.45
-F1-score (1)	0.35
+Optimizer Adam
 
-Confusion Matrix menunjukkan model baik untuk mendeteksi kelas 0 (non-fraud), dan cukup baik untuk kelas fraud mengingat imbalance yang tinggi.
+Callbacks EarlyStopping dan ReduceLROnPlateau
 
-ROC-AUC 0.898 menandakan model memiliki kemampuan klasifikasi yang sangat baik.
+Model ini memberikan pendekatan alternatif berbasis Deep Learning sesuai cakupan kelas.
 
-📦 6. Batch Prediction untuk Test Set
+Evaluation
+Random Forest
 
-Melakukan prediksi seluruh test set sekaligus menyebabkan crash.
-Solusi: gunakan batch prediction (50.000 baris per batch).
+ROC–AUC: sekitar 0.898
 
-Tujuan:
+Precision dan recall untuk kelas fraud cukup baik mengingat dataset sangat tidak seimbang.
 
-menghindari RAM overload
+Model lebih kuat mendeteksi kelas non-fraud, namun tetap mampu mengenali sebagian transaksi fraud.
 
-tetap menghasilkan submission lengkap 506.691 baris
+Deep Learning
 
-📄 7. Submission File
+Model memberikan performa kompetitif dengan stabilitas yang baik pada validation set setelah proses scaling dan early stopping.
+Perbandingan dilakukan menggunakan AUC dan akurasi sehingga terlihat perbedaan kemampuan model ML dan DL.
 
-File akhir:
+Batch Prediction untuk Test Set
+
+Prediksi langsung dalam satu kali proses menyebabkan Colab kehabisan memori. Untuk mengatasi hal tersebut digunakan batch prediction (misalnya 50.000 baris tiap batch).
+Pendekatan ini memungkinkan seluruh 506.691 baris test set diprediksi tanpa crash.
+
+Submission File
+
+Hasil akhir disimpan dalam file:
 
 submission_task1.csv
 
-
-Berisi:
+Berisi dua kolom:
 
 TransactionID
 
-Predicted fraud probability
+isFraud (probabilitas)
 
-Jumlah baris: 506.691
+Jumlah baris sesuai dataset test: 506.691.
 
-Format sesuai instruksi tugas.
+Cara Menjalankan Notebook
 
-🚀 8. Cara Menjalankan Notebook
-
-Upload dataset ke Google Drive
+Unggah dataset ke Google Drive
 
 Buka notebook di Google Colab
 
-Jalankan dari awal
+Jalankan seluruh sel dari awal
 
-Submission otomatis dihasilkan
+File submission akan dihasilkan secara otomatis
 
-📘 Kesimpulan
+Kesimpulan
 
-Pipeline ML berhasil dibangun secara end-to-end dengan preprocessing lengkap, model Random Forest, evaluasi metrik, dan pembuatan submission final.
-
-Dengan teknik sampling + batch prediction, notebook berhasil berjalan tanpa crash meskipun dataset besar.
+Pipeline end-to-end berhasil dibangun mencakup preprocessing, modeling menggunakan Machine Learning dan Deep Learning, evaluasi metrik, dan pembuatan submission. Dengan kombinasi teknik sampling serta batch prediction, proses dapat berjalan stabil tanpa kehabisan memori. Analisis AUC menunjukkan bahwa Random Forest dan MLP memiliki performa yang kompetitif, dengan Random Forest sedikit lebih kuat pada data tabular yang digunakan.
